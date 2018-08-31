@@ -1,12 +1,11 @@
 <?php
 /**
- * icePHP框架的一部分,独立使用
+ * icePHP框架的一部分,以实现读取多个配置目录下多个配置文件的功能
  */
-namespace icePHP;
 
-//文件包含,不区分大小写
-//同一命名空间,不用引入
-//use icePHP\RequireInsensitivity;
+declare(strict_types=1);
+
+namespace icePHP;
 
 
 /**
@@ -51,7 +50,7 @@ class Config
 
         //逐个配置文件目录查找
         foreach (self::$dirs as $dir) {
-            $content = RequireInsensitivity::read($dir . DIRECTORY_SEPARATOR . $fullName);
+            $content = requireFile($dir . DIRECTORY_SEPARATOR . $fullName);
             if ($content) return $content;
         }
 
