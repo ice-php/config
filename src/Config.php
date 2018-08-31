@@ -110,4 +110,23 @@ class Config
 
         return $config;
     }
+
+    /**
+     * 判断是否是调试运行模式,只有当系统配置中的config==debug时,才是调试运行模式,不考虑临时指定调试运行模式
+     * @param $name string 调试参数的名称
+     * @return boolean 是/否
+     */
+    public static function isDebug(string $name = 'debug'): bool
+    {
+        return self::mode() == $name;
+    }
+
+    /**
+     * 获取当前运行模式: debug/run/demo, 根据项目需要,也可增加运行模式
+     * @throws
+     */
+    static public function mode(): string
+    {
+        return self::get('system', 'config');
+    }
 }
