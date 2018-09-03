@@ -4,9 +4,7 @@
  */
 
 declare(strict_types=1);
-
 namespace icePHP;
-
 
 /**
  * 在多个目录下读取配置文件
