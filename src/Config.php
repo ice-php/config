@@ -65,7 +65,6 @@ class Config
      * 开发人员通常使用 全局函数 config 来调用本功能
      * @param string[] $argv
      * @return   string|array|bool
-     * @throws
      */
     public static function get(string ... $argv)
     {
@@ -77,7 +76,7 @@ class Config
 
         // 一个参数都未给出
         if ($args < 1) {
-            throw new \Exception('call config without parameters.');
+            return null;
         }
 
         // 第一个参数是配置文件名
@@ -102,7 +101,7 @@ class Config
 
             // 不应该到达这里
             if (!is_array($config)) {
-                throw new \Exception('specified config item don\'t exist:' . implode(':', $argv));
+                return null;
             }
 
             $config = $config[$itemName];
