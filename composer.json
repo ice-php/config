@@ -1,6 +1,6 @@
 {
   "name": "ice-php/config",
-  "description": "icePHP multi config",
+  "description": "icePHP框架的一部分,用来读取配置",
   "keywords": [
     "icePHP",
     "config"
