@@ -19,7 +19,7 @@
   ],
   "require": {
     "php": ">=7.1.0",
-    "ice-php/functions":"*"
+    "ice-php/functions": "*"
   },
   "minimum-stability": "dev",
   "autoload": {
