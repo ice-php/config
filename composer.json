@@ -1,6 +1,6 @@
 {
   "name": "ice-php/config",
-  "description": "icePHP框架的一部分,用来读取配置",
+  "description": "实现读取多个配置目录下多个配置文件的功能",
   "keywords": [
     "icePHP",
     "config"
