@@ -15,3 +15,18 @@ function config(string ...$items)
 {
     return Config::get(...$items);
 }
+
+/**
+ * 取配置值,取不到时返回缺省值
+ * @param mixed $default
+ * @param string[] $items
+ * @return mixed
+ */
+function configDefault($default, string ...$items)
+{
+    try {
+        return config(...$items);
+    } catch (ConfigException $e) {
+        return $default;
+    }
+}
