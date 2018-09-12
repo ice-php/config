@@ -21,7 +21,7 @@ class Config
      * 设置一个优先的配置目录
      * @param string $dir
      */
-    public static function insert(string $dir)
+    public static function insert(string $dir): void
     {
         array_unshift(self::$dirs, $dir);
     }
@@ -30,27 +30,36 @@ class Config
      * 设置一个低优先的配置目录
      * @param string $dir
      */
-    public static function append(string $dir)
+    public static function append(string $dir): void
     {
         self::$dirs[] = $dir;
     }
-
 
     /**
      * 获取配置文件内容(从文件中获取)
      *
      * @param string $fileName 配置文件名
      * @return array|null 配置内容
+     * @throws ConfigException
      */
-    private static function readFile(string $fileName)
+    private static function readFile(string $fileName): ?array
     {
         //配置文件名
         $fullName = $fileName . '.config.php';
 
         //逐个配置文件目录查找
         foreach (self::$dirs as $dir) {
-            $content = requireFile($dir . DIRECTORY_SEPARATOR . $fullName);
-            if ($content) return $content;
+            try {
+                $content = requireFile($dir . DIRECTORY_SEPARATOR . $fullName);
+            } catch (RequireFileException $e) {
+                continue;
+            }
+            if ($content) {
+                if (!is_array($content)) {
+                    throw new ConfigException('配置文件内容必须是数组', ConfigException::CONTENT_NOT_ARRAY);
+                }
+                return $content;
+            }
         }
 
         //未找到
@@ -64,6 +73,7 @@ class Config
      * 开发人员通常使用 全局函数 config 来调用本功能
      * @param string[] $argv
      * @return   string|array|bool
+     * @throws ConfigException
      */
     public static function get(string ... $argv)
     {
@@ -75,7 +85,7 @@ class Config
 
         // 一个参数都未给出
         if ($args < 1) {
-            return null;
+            throw new ConfigException('请求配置时缺少参数', ConfigException::MISS_ARGUMENT);
         }
 
         // 第一个参数是配置文件名
@@ -100,7 +110,7 @@ class Config
 
             // 不应该到达这里
             if (!is_array($config)) {
-                return null;
+                throw new ConfigException('配置文件内容必须是数组', ConfigException::CONTENT_NOT_ARRAY);
             }
 
             $config = $config[$itemName];
@@ -113,6 +123,7 @@ class Config
      * 判断是否是调试运行模式,只有当系统配置中的config==debug时,才是调试运行模式,不考虑临时指定调试运行模式
      * @param $name string 调试参数的名称
      * @return boolean 是/否
+     * @throws ConfigException
      */
     public static function isDebug(string $name = 'debug'): bool
     {
@@ -121,10 +132,14 @@ class Config
 
     /**
      * 获取当前运行模式: debug/run/demo, 根据项目需要,也可增加运行模式
-     * @throws
+     * @throws ConfigException
      */
     static public function mode(): string
     {
-        return self::get('system', 'config');
+        $mode = self::get('system', 'config');
+        if (!$mode) {
+            throw new ConfigException('system/config配置必须指定', ConfigException::MUST_SYSTEM_CONFIG);
+        }
+        return $mode;
     }
 }

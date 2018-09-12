@@ -9,6 +9,7 @@ namespace icePHP;
  * 所有参数原样传递
  * @param $items string[] 配置文件名称以及配置项名称列表
  * @return string|array|bool
+ * @throws ConfigException
  */
 function config(string ...$items)
 {
