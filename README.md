@@ -26,7 +26,7 @@
     
 * 获取当前模式
 
-    mode(): string  
+    Config::mode(): string  
 
 * 配置文件示例
 ~~~php
