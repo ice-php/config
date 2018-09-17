@@ -99,6 +99,11 @@ class Config
         // 根据请求参数,获取子项
         $config = $all[$file];
 
+        // 配置项不是数组
+        if (!is_array($config)) {
+            throw new ConfigException('配置文件内容必须是数组', ConfigException::CONTENT_NOT_ARRAY);
+        }
+
         // 根据函数参数,获取继续的子项
         for ($i = 1; $i < $args; $i++) {
             $itemName = $argv[$i];
@@ -106,11 +111,6 @@ class Config
             // 没有指定的配置项
             if (!isset($config[$itemName])) {
                 return null;
-            }
-
-            // 不应该到达这里
-            if (!is_array($config)) {
-                throw new ConfigException('配置文件内容必须是数组', ConfigException::CONTENT_NOT_ARRAY);
             }
 
             $config = $config[$itemName];
@@ -123,7 +123,6 @@ class Config
      * 判断是否是调试运行模式,只有当系统配置中的config==debug时,才是调试运行模式,不考虑临时指定调试运行模式
      * @param $name string 调试参数的名称
      * @return boolean 是/否
-     * @throws ConfigException
      */
     public static function isDebug(string $name = 'debug'): bool
     {
@@ -132,13 +131,13 @@ class Config
 
     /**
      * 获取当前运行模式: debug/run/demo, 根据项目需要,也可增加运行模式
-     * @throws ConfigException
      */
     static public function mode(): string
     {
-        $mode = self::get('system', 'config');
-        if (!$mode) {
-            throw new ConfigException('system/config配置必须指定', ConfigException::MUST_SYSTEM_CONFIG);
+        try {
+            $mode = self::get('system', 'config');
+        } catch (ConfigException $e) {
+            trigger_error('system/config配置必须指定', E_USER_ERROR);
         }
         return $mode;
     }
