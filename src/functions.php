@@ -30,3 +30,32 @@ function configDefault($default, string ...$items)
         return $default;
     }
 }
+
+/**
+ * 获取一个必须存在的配置项
+ * @param string ...$items
+ * @return array|bool|string
+ */
+function configMust(string ...$items)
+{
+    try {
+        $config = config(...$items);
+    } catch (ConfigException $e) {
+        trigger_error($e->getMessage(), E_USER_ERROR);
+    }
+    return $config;
+}
+
+/**
+ * 获取一个数组类型的配置项
+ * @param string ...$items
+ * @return array
+ */
+function configMustArray(string ...$items): array
+{
+    $config = configMust(...$items);
+    if (!is_array($config)) {
+        trigger_error('配置:' . implode('|', $items) . ' 必须是数组', E_USER_ERROR);
+    }
+    return $config;
+}
